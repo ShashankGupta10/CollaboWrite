@@ -7,7 +7,6 @@ require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
-
 app.use(cors());
 const io = require("socket.io")(server, {
   cors: {
@@ -16,6 +15,10 @@ const io = require("socket.io")(server, {
   },
 });
 
+app.get("/", (req, res) => {
+    res.send("<h1>Hello World!</h1>");
+    }
+);
 const find_or_create_document = async (id) => {
   let document;
   try {
