@@ -11,7 +11,7 @@ const TextEditor = () => {
   const [value, setValue] = useState(RichTextEditor.createEmptyValue());
 
   useEffect(() => {
-    const sock = io("https://majestic-dango-b13e09.netlify.app/");
+    const sock = io("https://collabowrite-server.onrender.com/");
     console.log(sock);
     setSocket(sock);
     return () => sock.disconnect();
