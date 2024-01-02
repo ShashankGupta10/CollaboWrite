@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import RichTextEditor from "react-rte";
+import "./TextEditor.css";
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -46,33 +47,9 @@ const TextEditor = () => {
     <RichTextEditor
       value={value}
       onChange={onChange}
-      toolbarStyle={{
-        display: "flex",
-        justifyContent: "center",
-        border: "none",
-        borderRadius: "4px",
-        height: "50px",
-        width: "100%",
-        padding: "10px",
-        boxSizing: "border-box",
-        fontFamily: "'Roboto', sans-serif",
-        fontSize: "16px",
-        lineHeight: "1.5",
-      }}
-      editorStyle={{
-        border: "none",
-        borderRadius: "4px",
-        height: "50%",
-        width: "100%",
-        padding: "10px",
-        boxSizing: "border-box",
-        fontFamily: "'Roboto', sans-serif",
-        fontSize: "16px",
-        lineHeight: "1.5",
-        color: "#333",
-        backgroundColor: "#f9f9f9",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-      }}
+      toolbarClassName="rte-toolbar"
+      editorClassName="rte-editor"
+      placeholder="Start writing..."
     />
   );
 };
