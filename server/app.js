@@ -10,15 +10,14 @@ const server = http.createServer(app);
 app.use(cors());
 const io = require("socket.io")(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: ["https://collabowrite.vercel.app/*", "*"],
     methods: ["GET", "POST"],
   },
 });
 
 app.get("/", (req, res) => {
-    res.send("<h1>Hello World!</h1>");
-    }
-);
+  res.send("<h1>Hello World!</h1>");
+});
 const find_or_create_document = async (id) => {
   let document;
   try {
