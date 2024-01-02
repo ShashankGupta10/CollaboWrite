@@ -1,19 +1,8 @@
 {
-    "version": 2,
-    "public": true,
-    "builds": [
+    "rewrites": [
       {
-        "src": "package.json",
-        "use": "@vercel/node"
+        "source": "/(.*)",
+        "destination": "/:id"
       }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/"
-      }
-    ],
-    "env": {
-      "CLIENT_URL": "https://collabowrite.vercel.app"
-    }
+    ]
   }
