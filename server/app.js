@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
     socket.emit("load_document", document.data);
 
     socket.on("send_changes", (delta) => {
-      socket.broadcast.to(document._id).emit("receive-changes", delta);
+      socket.broadcast.to(document._id).emit("receive_changes", delta);
     });
     socket.on("save_document", async (data) => {
       console.log(document);
