@@ -1,4 +1,4 @@
-# CollaboWrite 🧙
+# CollaboWrite 🤝
 
 ## Project Description
 CollaboWrite is a dynamic collaborative text editing application built on the React, Node.js, Express, Socket.io, and MongoDB stack. It enables real-time collaboration among users, allowing them to edit and share text documents seamlessly. Whether you're working on a project with team members or collaborating on content creation, CollaboWrite provides a smooth and efficient collaborative writing experience.
@@ -90,7 +90,7 @@ Ensure you have the following prerequisites installed on your machine:
 
 ## Demo
 
-https://github.com/ShashankGupta10/Code-Wizard/assets/117008526/b7dccaf0-a6c2-4888-9114-424f7e982143
+https://github.com/ShashankGupta10/CollaboWrite/assets/117008526/0c78b608-4185-497e-9be6-5980c25678dc
 
 ## Author
 Made with ❤️ by Shashank Gupta
