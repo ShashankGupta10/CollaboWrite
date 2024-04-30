@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://collabowrite.vercel.app/",
+    origin: "https://collabowrite.vercel.app",
     methods: ["GET", "POST"],
     allowedHeaders: ["Access-Control-Allow-Origin"],
     credentials: true,
