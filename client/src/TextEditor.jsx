@@ -35,7 +35,7 @@ const TextEditor = () => {
 
   // establish socket connection with the backend server
   useEffect(() => {
-    const sock = io("https://collabo-write.vercel.app/");
+    const sock = io("https://collabowrite-server.onrender.com");
     setSocket(sock);
     return () => sock.disconnect();
   }, []);
