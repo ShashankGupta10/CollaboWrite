@@ -9,9 +9,13 @@ require("dotenv").config();
 const app = express();
 const server = http.createServer(app);
 app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("<h1>CollaboWrite server</h1>");
+});
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://192.168.31.182:5173",
+    origin: "https://collabowrite.vercel.app/",
     methods: ["GET", "POST"],
     allowedHeaders: ["Access-Control-Allow-Origin"],
     credentials: true,
@@ -110,7 +114,7 @@ const start = async () => {
     .catch((err) => console.log(err));
 
   const port = process.env.PORT || 3000;
-  server.listen(port, "192.168.31.182", () => {
+  server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
 };
