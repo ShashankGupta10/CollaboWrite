@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.29.1",
     "@monaco-editor/react": "^4.6.0",
-    "@tinymce/tinymce-react": "^5.0.1",
-    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.21.1",
     "socket.io-client": "^4.7.2",
     "uuid": "^9.0.1"

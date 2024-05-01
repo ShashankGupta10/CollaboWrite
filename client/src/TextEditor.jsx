@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-import { Editor } from "@tinymce/tinymce-react";
+// import { Editor } from "@tinymce/tinymce-react";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 import { Editor as CodeEditor } from "@monaco-editor/react";
 import Navbar from "./Navbar";
 const SAVE_INTERVAL_MS = 2000;
@@ -12,7 +14,6 @@ const TextEditor = () => {
   const [value, setValue] = useState("");
   const [code_value, set_code_value] = useState("");
   const [code, setCode] = useState(false);
-  const ref = useRef(null);
   const [containerWidth, setContainerWidth] = useState("100%");
 
   // resize function for responsiveness of editor
@@ -116,44 +117,11 @@ const TextEditor = () => {
       <Navbar code={code} setCode={setCode} />
       <div className="text-editor flex justify-center">
         {!code ? (
-          <Editor
+          <ReactQuill
             value={value}
-            apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
-            onEditorChange={onChange}
-            onInit={(_evt, editor) => (ref.current = editor)}
-            ref={ref}
-            init={{
-              height: 600,
-              width: 900,
-              menubar: false,
-              plugins: [
-                "advlist",
-                "autolink",
-                "lists",
-                "link",
-                "image",
-                "charmap",
-                "preview",
-                "anchor",
-                "searchreplace",
-                "visualblocks",
-                "code",
-                "fullscreen",
-                "insertdatetime",
-                "media",
-                "table",
-                "code",
-                "help",
-                "wordcount",
-              ],
-              toolbar:
-                "undo redo | blocks | " +
-                "bold italic forecolor | alignleft aligncenter " +
-                "alignright alignjustify | bullist numlist outdent indent | " +
-                "removeformat | help",
-              content_style:
-                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-            }}
+            onChange={onChange}
+            theme="snow"
+            className="w-[800px] h-[550px]"      
           />
         ) : (
           <div
