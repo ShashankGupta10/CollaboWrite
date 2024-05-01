@@ -10,7 +10,7 @@ const app = express();
 const server = http.createServer(app);
 app.use(cors());
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("<h1>CollaboWrite server</h1>");
 });
 const io = require("socket.io")(server, {
@@ -72,7 +72,7 @@ const getCodeDocument = async (document_id) => {
 
 // Socket.io connection
 io.on("connection", (socket) => {
-  console.log("connected to socket");
+  console.log("connected to text socket from:", socket.id);
   socket.on("get_document", async (document_id) => {
     let documentData = await getDocumentData(document_id);
     socket.join(document_id);
@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
       socket.broadcast.to(document_id).emit("receive_changes", delta);
     });
     socket.on("save_document", async (data) => {
-      console.log("saving brooo");
+      console.log("saving text data");
       await Document.findByIdAndUpdate(document_id, { data: data });
       await kv.set(document_id, data, { ex: 2000, nx: true });
     });
@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("connected to socket");
+  console.log("connected to code socket from:", socket.id);
   socket.on("get_code_document", async (document_id) => {
     let documentData = await getCodeDocument(document_id);
     socket.join(document_id);
@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
       socket.broadcast.to(document_id).emit("receive_code_changes", delta);
     });
     socket.on("save_code_document", async (code) => {
-      console.log("saving brooo");
+      console.log("saving code data");
       await Document.findByIdAndUpdate(document_id, { code: code });
       await kv.set(`${document_id}_code`, code, { ex: 2000, nx: true });
     });

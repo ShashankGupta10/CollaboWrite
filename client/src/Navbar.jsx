@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { ToastContainer, toast } from "react-toast";
 // eslint-disable-next-line react/prop-types
 const Navbar = ({ code, setCode }) => {
   const [state, setState] = useState(false);
@@ -13,10 +13,15 @@ const Navbar = ({ code, setCode }) => {
     {
       title: "Share",
       do: async () => {
-        console.log(navigator, navigator.clipboard)
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(window.location.href)
+          await navigator.clipboard.writeText(window.location.href);
+          toast.success("Link copied successfully", {
+            backgroundColor: "#4caf50",
+          });
         } else {
+          toast.error("Could not copy link", {
+            backgroundColor: "#f44336",
+          });
           console.error("Clipboard API not available");
         }
       },
@@ -24,6 +29,7 @@ const Navbar = ({ code, setCode }) => {
   ];
   return (
     <nav className="bg-white w-full border-b md:border-0 md:static">
+      <ToastContainer position="top-right" delay={2000} />
       <div className="items-center px-4 max-w-screen-xl mx-auto md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <span className="text-3xl font-bold">COLLABOWRITE</span>

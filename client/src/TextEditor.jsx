@@ -1,110 +1,92 @@
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-// import { Editor } from "@tinymce/tinymce-react";
-import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
-import { Editor as CodeEditor } from "@monaco-editor/react";
 import Navbar from "./Navbar";
-const SAVE_INTERVAL_MS = 2000;
+import ReactQuill from "react-quill";
+import { Editor as CodeEditor } from "@monaco-editor/react";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+
+const SAVE_INTERVAL_MS = 4000;
 
 const TextEditor = () => {
   const { id: documentId } = useParams();
-  const [socket, setSocket] = useState();
+  const [socket, setSocket] = useState(null);
   const [value, setValue] = useState("");
-  const [code_value, set_code_value] = useState("");
-  const [code, setCode] = useState(false);
+  const [codeValue, setCodeValue] = useState("");
+  const [codeMode, setCodeMode] = useState(false);
   const [containerWidth, setContainerWidth] = useState("100%");
 
-  // resize function for responsiveness of editor
   useEffect(() => {
     const handleResize = () => {
       const editorContainer = document.querySelector("#editor-container");
       if (editorContainer)
-        setContainerWidth(
-          `${document.getElementById("editor-container").clientWidth}px`
-        );
+        setContainerWidth(`${editorContainer.clientWidth}px`);
     };
 
-    handleResize(); // Set initial width
-    window.addEventListener("resize", handleResize); // Listen for window resize events
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize); // Cleanup
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // establish socket connection with the backend server
   useEffect(() => {
-    const sock = io("https://collabowrite-server.onrender.com");
+    const sock = io("https://collabo-write.vercel.app");
     setSocket(sock);
-    return () => sock.disconnect();
+
+    return () => {
+      sock.disconnect();
+    };
   }, []);
 
-  // handle changes received from the socket
   useEffect(() => {
     if (!socket) return;
-    const handler = (delta) => {
-      setValue(delta);
-    };
-    socket.on("receive_changes", handler);
-    return () => socket.off("receive_changes", handler);
-  }, [socket]);
 
-  // fetching document data from the backend
-  useEffect(() => {
-    if (!socket) return;
-    socket.once("load_document", (document) => {
-      const htmlDocument = typeof document === "string" ? document : "";
-      setValue(htmlDocument);
+    socket.on("receive_changes", (delta) => {
+      setValue(delta);
     });
+
+    socket.on("receive_code_changes", (delta) => {
+      setCodeValue(delta);
+    });
+
+    socket.once("load_document", (document) => {
+      setValue(document);
+    });
+
+    socket.once("load_code_document", (document) => {
+      setCodeValue(document);
+    });
+
     socket.emit("get_document", documentId);
+    socket.emit("get_code_document", documentId);
+
+    return () => {
+      socket.off("receive_changes");
+      socket.off("receive_code_changes");
+    };
   }, [socket, documentId]);
 
-  // saving document on every SAVE_INTERVAL_MS milliseconds of inactivity
   useEffect(() => {
     if (!socket) return;
+
     const interval = setInterval(() => {
       socket.emit("save_document", value.toString("html"));
+      socket.emit("save_code_document", codeValue.toString("html"));
     }, SAVE_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [socket, value]);
 
-  // sending changes to the backend whenever changes are made by the user
-  const onChange = (newValue) => {
+    return () => {
+      clearInterval(interval);
+    };
+  }, [socket, value, codeValue]);
+
+  const onTextChange = (newValue) => {
+    setValue(newValue);
     if (socket) {
       socket.emit("send_changes", newValue.toString("html"));
     }
   };
-
-  // handle changes received from the socket
-  useEffect(() => {
-    if (!socket) return;
-    const handler = (delta) => {
-      set_code_value(delta);
-    };
-    socket.on("receive_code_changes", handler);
-    return () => socket.off("receive_code_changes", handler);
-  }, [socket]);
-
-  // fetching document data from the backend
-  useEffect(() => {
-    if (!socket) return;
-    socket.once("load_code_document", (document) => {
-      const htmlDocument = typeof document === "string" ? document : "";
-      set_code_value(htmlDocument);
-    });
-    socket.emit("get_code_document", documentId);
-  }, [socket, documentId]);
-
-  // saving document on every SAVE_INTERVAL_MS milliseconds of inactivity
-  useEffect(() => {
-    if (!socket) return;
-    const interval = setInterval(() => {
-      socket.emit("save_code_document", code_value.toString("html"));
-    }, SAVE_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [socket, code_value]);
 
   const onCodeChange = (newValue) => {
     if (socket) {
@@ -114,14 +96,14 @@ const TextEditor = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Navbar code={code} setCode={setCode} />
+      <Navbar code={codeMode} setCode={setCodeMode} />
       <div className="text-editor flex justify-center">
-        {!code ? (
+        {!codeMode ? (
           <ReactQuill
             value={value}
-            onChange={onChange}
+            onChange={onTextChange}
             theme="snow"
-            className="w-[800px] h-[550px]"      
+            className="w-[800px] h-[700px]"
           />
         ) : (
           <div
@@ -136,7 +118,7 @@ const TextEditor = () => {
               language={"python"}
               theme={"vs-dark"}
               path={"script.js"}
-              value={code_value}
+              value={codeValue}
               options={{
                 fontFamily: 'Consolas, "Courier New", monospace',
                 fontSize: 16,
