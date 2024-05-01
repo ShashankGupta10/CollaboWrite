@@ -32,7 +32,7 @@ const TextEditor = () => {
   }, []);
 
   useEffect(() => {
-    const sock = io("https://collabo-write.vercel.app");
+    const sock = io("https://collabowrite-server.onrender.com");
     setSocket(sock);
 
     return () => {
